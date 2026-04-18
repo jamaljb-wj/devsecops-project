@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,8 +14,7 @@ spec:
         app: my-app
     spec:
       containers:
-      - name: app
-        image: my-app:latest
-        # ⚠️ Ce pod tourne en root (mauvaise pratique)
-        securityContext:
-          runAsNonRoot: false
+        - name: app
+          image: my-app:latest
+          securityContext:
+            runAsNonRoot: false
