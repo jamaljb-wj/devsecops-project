@@ -1,37 +1,25 @@
-# 1. NOM DU WORKFLOW
+---
 name: DevSecOps Pipeline
 
-# 2. QUAND LE LANCER ?
 on:
-  push:            # À chaque fois qu'on pousse du code
-    branches: [ "main" ]
-  pull_request:    # À chaque fois qu'on ouvre une Pull Request
-    branches: [ "main" ]
-  workflow_dispatch: # Pour le lancer manuellement depuis l'interface GitHub
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
 
-# 3. LES JOBS (ce que le pipeline va faire)
 jobs:
-  # JOB 1 : Linting et vérifications
   linting:
-    runs-on: ubuntu-latest  # Utilise une machine virtuelle Linux toute neuve
+    runs-on: ubuntu-latest
     steps:
-      # Étape 1.1 : Récupérer le code du dépôt
       - uses: actions/checkout@v4
-
-      # Étape 1.2 : Vérifier la syntaxe des fichiers YAML
       - name: Lint YAML files
         uses: ibiqlik/action-yamllint@v3
-        with:
-          config_file: .yamllint.yml # On peut créer une config, mais on va utiliser la config par défaut
 
-  # JOB 2 : Build de l'image Docker
   build:
     runs-on: ubuntu-latest
     steps:
-      # Étape 2.1 : Récupérer le code
       - uses: actions/checkout@v4
-
-      # Étape 2.2 : Construire l'image Docker
       - name: Build Docker image
         run: |
           docker build -t my-app:latest .
