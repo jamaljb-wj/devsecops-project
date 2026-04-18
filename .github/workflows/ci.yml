@@ -50,3 +50,13 @@ jobs:
           format: 'table'
           exit-code: '0'
           severity: 'CRITICAL,HIGH'
+  policy-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Conftest
+        uses: open-policy-agent/setup-conftest@v2
+
+      - name: Test Kubernetes deployment with Conftest
+        run: conftest test deployment.yaml --policy ./policy/
