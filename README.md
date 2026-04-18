@@ -16,7 +16,6 @@ Ce projet est une API Flask volontairement vulnérable, créée dans le cadre d'
 | **Yamllint** | Linting des fichiers YAML |
 
 ## 📁 Structure du projet
-.
 ├── .github/workflows/
 │ └── ci.yml # Pipeline CI/CD GitHub Actions
 ├── policy/
@@ -57,31 +56,36 @@ Le pipeline GitHub Actions exécute 4 jobs :
 
 La politique `deny_root.rego` bloque tout déploiement Kubernetes dont les pods tournent en mode root :
 
-```rego
-package main
+    package main
+    
+    deny[msg] {
+      input.kind == "Deployment"
+      container := input.spec.template.spec.containers[_]
+      not container.securityContext.runAsNonRoot == true
+      msg = sprintf("❌ Le pod '%v' doit être configuré avec runAsNonRoot: true", [container.name])
+    }
 
-deny[msg] {
-  input.kind == "Deployment"
-  container := input.spec.template.spec.containers[_]
-  not container.securityContext.runAsNonRoot == true
-  msg = sprintf("❌ Le pod '%v' doit être configuré avec runAsNonRoot: true", [container.name])
-}
-📝 Recommandations
-Mettre à jour Flask vers la version 2.3.2
+## 📝 Recommandations
 
-Utiliser une image de base plus récente (ex: python:3.12-slim)
+  Mettre à jour Flask vers la version 2.3.2
+   
+   Utiliser une image de base plus récente (ex: python:3.12-slim)
+   
+   Activer le blocage des vulnérabilités CRITICAL (exit-code: '1')
+   
+   Ajouter Semgrep (SAST) pour analyser le code source
+   
+   Générer un SBOM avec Trivy
+   ## 👨‍🏫 Enseignant
 
-Activer le blocage des vulnérabilités CRITICAL (exit-code: '1')
+**Monsieur Laurent FREREBEAU**  
+ESTIAM PARIS - DevSecOps - 5DVSC0PS - 2025/2026
 
-Ajouter Semgrep (SAST) pour analyser le code source
+## 👤 Auteur
+Jamal Jabrane - Projet DevSecOps 
 
-Générer un SBOM avec Trivy
-
-👤 Auteur
-Jamal Jabrane - Projet DevSecOps
-
-📅 Date
+## 📅 Date
 Avril 2026
 
-📄 Licence
+## 📄 Licence
 Ce projet est réalisé dans un cadre pédagogique.
